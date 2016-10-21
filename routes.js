@@ -2,10 +2,17 @@
 module.exports = function (app, models) {
     var module = {};
 
+    app.get('/', function(req, res) {
+    });
+
+    /*---------------------------------------------------------------*/
+    /****************************** API ******************************/
+    /*---------------------------------------------------------------*/
+
     app.get('/api/todos', function(req, res) {
 
         // use mongoose to get all todos in the database
-        models.find(function(err, todos) {
+        models.todo.find(function(err, todos) {
 
             // if there is an error retrieving, send the error. nothing after res.send(err) will execute
             if (err)
@@ -19,15 +26,15 @@ module.exports = function (app, models) {
     app.post('/api/todos', function(req, res) {
 
         // create a todo, information comes from AJAX request from Angular
-        models.create({
-            text : req.body.text,
-            done : false
+        models.todo.create({
+            title: req.body.text,
+            done: false
         }, function(err, todo) {
             if (err)
                 res.send(err);
 
             // get and return all the todos after you create another
-            models.find(function(err, todos) {
+            models.todo.find(function(err, todos) {
                 if (err)
                     res.send(err)
                 res.json(todos);
@@ -38,14 +45,14 @@ module.exports = function (app, models) {
 
     // delete a todo
     app.delete('/api/todos/:todo_id', function(req, res) {
-        models.remove({
-            _id : req.params.todo_id
+        models.todo.remove({
+            _id: req.params.todo_id
         }, function(err, todo) {
             if (err)
                 res.send(err);
 
             // get and return all the todos after you create another
-            models.find(function(err, todos) {
+            models.todo.find(function(err, todos) {
                 if (err)
                     res.send(err)
                 res.json(todos);
